@@ -14,6 +14,7 @@ import 'package:flutter/animation.dart' show Curves;
 
 import 'colors.dart';
 import 'interface_level.dart';
+import 'localizations.dart';
 
 const double _kBackGestureWidth = 20.0;
 const double _kMinFlingVelocity = 1.0; // Screen widths per second.
@@ -936,7 +937,8 @@ Widget _buildCupertinoDialogTransitions(BuildContext context, Animation<double> 
 
 /// Displays an iOS-style dialog above the current contents of the app, with
 /// iOS-style entrance and exit animations, modal barrier color, and modal
-/// barrier behavior (the dialog is not dismissible with a tap on the barrier).
+/// barrier behavior (the dialog is not dismissible by default with a tap on
+/// the barrier).
 ///
 /// This function takes a `builder` which typically builds a [CupertinoDialog]
 /// or [CupertinoAlertDialog] widget. Content below the dialog is dimmed with a
@@ -958,6 +960,10 @@ Widget _buildCupertinoDialogTransitions(BuildContext context, Animation<double> 
 /// call `Navigator.of(context, rootNavigator: true).pop(result)` to close the
 /// dialog rather than just `Navigator.pop(context, result)`.
 ///
+/// The `barrierDismissible` argument is used to determine whether this route
+/// can be dismissed by tapping the modal barrier. This argument defaults
+/// to false.
+///
 /// Returns a [Future] that resolves to the value (if any) that was passed to
 /// [Navigator.pop] when the dialog was closed.
 ///
@@ -971,13 +977,15 @@ Widget _buildCupertinoDialogTransitions(BuildContext context, Animation<double> 
 Future<T> showCupertinoDialog<T>({
   @required BuildContext context,
   @required WidgetBuilder builder,
+  bool barrierDismissible = false,
   bool useRootNavigator = true,
 }) {
   assert(builder != null);
   assert(useRootNavigator != null);
   return showGeneralDialog(
     context: context,
-    barrierDismissible: false,
+    barrierDismissible: barrierDismissible,
+    barrierLabel: CupertinoLocalizations.of(context).modalBarrierDismissLabel,
     barrierColor: CupertinoDynamicColor.resolve(_kModalBarrierColor, context),
     // This transition duration was eyeballed comparing with iOS
     transitionDuration: const Duration(milliseconds: 250),
